@@ -1,32 +1,25 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import feedparser
 
 app = FastAPI()
 
-# Allow frontend to access
+# Allow all origins (frontend + mobile)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 @app.get("/")
-def root():
-    return {"message": "NIEO backend running successfully"}
+def home():
+    return {"message": "✅ NIEO.AI Backend Live on Vercel"}
 
 @app.get("/news")
-def get_news(topic: str = "general", lang: str = "en"):
-    # Google RSS URL with language
-    rss_url = f"https://news.google.com/rss/search?q={topic}&hl={lang}"
-    feed = feedparser.parse(rss_url)
-    articles = []
-
-    for entry in feed.entries[:10]:  # top 10 news
-        articles.append({
-            "title": entry.title,
-            "link": entry.link
-        })
-
+def get_news():
+    feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
+    feed = feedparser.parse(feed_url)
+    articles = [{"title": entry.title, "link": entry.link} for entry in feed.entries[:10]]
     return {"articles": articles}
