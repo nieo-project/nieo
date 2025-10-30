@@ -118,11 +118,10 @@ function sendMessage(){
 
   const tempMsg = addMessage("Fetching news & AI response...","bot");
 
-  // Encode topic for URL to handle spaces
   const encodedTopic = encodeURIComponent(topic);
 
-  // News fetch
-  fetch(`http://127.0.0.1:4444/news?topic=${encodedTopic}`)
+  // ✅ Updated backend links (FastAPI hosted on Vercel)
+  fetch(`https://nieo-project.vercel.app/news?topic=${encodedTopic}`)
     .then(res => res.json())
     .then(data => {
       if(tempMsg) tempMsg.remove();
@@ -132,10 +131,10 @@ function sendMessage(){
         });
       } else addMessage("No news found for this topic.","bot");
     })
-    .catch(()=> addMessage("Error fetching news. Make sure your backend is running.","bot"));
+    .catch(()=> addMessage("Error fetching news. Make sure backend is deployed.","bot"));
 
-  // AI chat fetch (optional)
-  fetch(`http://127.0.0.1:4444/chat?message=${encodedTopic}`)
+  // Optional AI chat endpoint
+  fetch(`https://nieo-project.vercel.app/chat?message=${encodedTopic}`)
     .then(res => res.json())
     .then(data => { if(data.reply) addMessage(data.reply,"bot"); })
     .catch(()=> console.log("AI chat fetch failed"));
